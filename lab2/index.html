@@ -1,0 +1,39 @@
+<html>
+  <head> </head>
+  <body>
+    <script>
+      function getRandom(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+      }
+
+      var str = "";
+      var characters = "ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz";
+
+      window.onload = function () {
+        var container = document.getElementById("container");
+
+        for (let i = 0; i < getRandom(1, 3); i++) {
+          let rnum = Math.floor(Math.random() * characters.length);
+          container.textContent += characters.substring(rnum, rnum + 1);
+        }
+
+        window.addEventListener("keydown", function (e) {
+          let firstChar = container.textContent[0];
+
+          if (e.key === firstChar) {
+            container.textContent = container.textContent.slice(1);
+          }
+
+          for (let j = 0; j < getRandom(1, 3); j++) {
+            var key_up_num = Math.floor(Math.random() * characters.length);
+            container.textContent += characters.substring(
+              key_up_num,
+              key_up_num + 1
+            );
+          }
+        });
+      };
+    </script>
+    <div id="container"></div>
+  </body>
+</html>
