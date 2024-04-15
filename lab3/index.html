@@ -1,12 +1,15 @@
+<!DOCTYPE html>
 <html>
+<head>
+  <title>Image Gallery</title>
   <style>
     .gallery {
       --g: 6px; /* the gap */
-
+      
       display: grid;
       width: 1200px; /* the size */
       aspect-ratio: 1;
-      grid: auto-flow 1fr / repeat(3, 1fr);
+      grid: auto-flow 1fr/repeat(3,1fr);
       gap: var(--g);
     }
     .gallery img {
@@ -15,59 +18,47 @@
       object-fit: cover;
       filter: grayscale();
       cursor: pointer;
-      transition: 0.5s;
+      transition: .5s;
     }
     .gallery img:hover {
       filter: grayscale(0);
     }
     .gallery img:nth-child(2) {
-      grid-area: 1/2 / span 2 / span 2;
-      clip-path: polygon(
-        0 0,
-        100% 0,
-        100% 100%,
-        calc(50% + var(--g) / 4) 100%,
-        0 calc(50% - var(--g) / 4)
-      );
+      grid-area: 1/2/span 2/span 2;
+      clip-path: polygon(0 0,100% 0,100% 100%,calc(50% + var(--g)/4) 100%,0 calc(50% - var(--g)/4));
     }
     .gallery img:nth-child(3) {
-      grid-area: 2/1 / span 2 / span 2;
-      clip-path: polygon(
-        0 0,
-        calc(50% - var(--g) / 4) 0,
-        100% calc(50% + var(--g) / 4),
-        100% 100%,
-        0 100%
-      );
+      grid-area: 2/1/span 2/span 2;
+      clip-path: polygon(0 0,calc(50% - var(--g)/4) 0,100% calc(50% + var(--g)/4),100% 100%,0 100%);
     }
   </style>
-  <budy>
-    <button onclick="getimg()">Get IMG</button>
-    <div id="gallery" class="gallery"></div>
-    <script>
-      var dataUrl =
-        "https://api.unsplash.com/photos?client_id=812193ef71ca946e361ed541979a0cfd91e9419a19235fd05f51ea14233f020a&per_page=30";
+</head>
+<body>
+  <button onclick="getimg()">Get IMG</button>
+  <div id='gallery' class="gallery"></div>
 
-      function getimg() {
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", dataUrl, true);
-        xhr.send();
-        xhr.onreadystatechange = function () {
-          if (this.readyState == 4 && this.status == 200) {
-            dataset = JSON.parse(this.responseText);
-            add_new_img(dataset);
-          }
-        };
-      }
+  <script>
+    function getimg() {
+      var imglist_Url = 'https://api.flickr.com/services/rest/?method=flickr.photos.getRecent&api_key=ca370d51a054836007519a00ff4ce59e&per_page=10&format=json&nojsoncallback=1';
 
-      function add_new_img(dataset) {
-        var Wall = document.getElementById("gallery");
-        for (var i = 0; i < dataset.length; i++) {
-          var Img = document.createElement("img");
-          Img.src = dataset[i].urls.small;
-          Wall.appendChild(Img);
-        }
-      }
-    </script>
-  </budy>
+      fetch(imglist_Url)
+        .then(response => response.json())
+        .then(data => {
+          var gallery = document.getElementById('gallery');
+          gallery.innerHTML = ''; // Clear existing images
+          data.photos.photo.forEach(photo => {
+            // Construct each image URL
+            var img_Url = `https://live.staticflickr.com/${photo.server}/${photo.id}_${photo.secret}_w.jpg`;
+            // Create img element and set src attribute
+            var img = document.createElement('img');
+            img.src = img_Url;
+            img.alt = photo.title;
+            // Add img element to the gallery
+            gallery.appendChild(img);
+          });
+        })
+        .catch(error => console.error('Error:', error));
+    }
+  </script>
+</body>
 </html>
