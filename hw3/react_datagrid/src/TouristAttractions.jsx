@@ -14,7 +14,7 @@ function TouristAttractions() {
       const json = await response.json();
       setData(
         json.map((item) => ({
-          id: item.UID, // 确保每行数据有一个唯一的 id
+          id: item.UID, 
           title: item.title,
           location:
             item.showInfo.length > 0 ? item.showInfo[0].location : "未提供地點",
